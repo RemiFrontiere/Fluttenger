@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "25047685736",
+    "firebase_url": "https://fluttenger.firebaseio.com",
+    "project_id": "fluttenger",
+    "storage_bucket": "fluttenger.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:25047685736:android:629da22552b9558c",
+        "android_client_info": {
+          "package_name": "fr.remifrontiere.fluttenger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "25047685736-iqvvvjs34bjgskek5hockspmr69s4ps5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "fr.remifrontiere.fluttenger",
+            "certificate_hash": "78c443db38d74c26793b73571c9c09e4b2b65ecb"
+          }
+        },
+        {
+          "client_id": "25047685736-mfoov7ujki92lf6tt0g22iujp77lbn0i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbz6XAWgLv0NT0X4Kpy7gEaA3Jt_jy0Oo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "25047685736-mfoov7ujki92lf6tt0g22iujp77lbn0i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
