@@ -1,4 +1,4 @@
-import '../fragments/first_fragment.dart';
+import '../fragments/chat_fragment.dart';
 import '../fragments/third_fragment.dart';
 import 'package:flutter/material.dart';
 import '../class/userDetail.dart';
