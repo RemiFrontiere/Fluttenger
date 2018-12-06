@@ -8,6 +8,9 @@ class ChatWidget extends StatefulWidget {
  Color _color;
  ChatBarItem _item;
 
+ List<String> list = ['Rémi', 'Olivier', 'Aubry', 'Wandy','Kevin', 'Maxence', 'Florian', 'Hugo'];
+
+
  ChatBarItem get item => _item;
  Color get color => _color;
 
@@ -27,70 +30,104 @@ class _ChatWidgetState extends State<ChatWidget> {
     super.initState();
   }
 
+  
+  List<Container> _getUsersList(){
+
+    List<Container> containers = new List<Container>();
+
+    for(var i = 0; i < widget.list.length; i++){
+      containers.add(
+        new Container(
+          height: 50.0,
+          // color: Colors.red,
+          child: new Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(widget.list[i]),
+              Container(
+                height: 30.0,
+                child: 
+                  FloatingActionButton(
+                  onPressed: () {
+                    showDialog(context: context, child:
+                      new AlertDialog(
+                        title: new Text("MortMesC"),
+                        content: new Text(widget.list[i]),
+                      )
+                    );
+                    print(widget.list[i]);
+                  },
+                  tooltip: 'B',
+                  child: new Icon(
+                    Icons.add
+                  ),
+                ),
+              )
+            ],
+          )
+        )
+      );
+    }
+
+    return containers;       
+  }
+
   _openAddFriendSnackbar() {
     return showModalBottomSheet(
       context: context,
       builder: (builder){
-        return new Container(
-          color: Color.fromRGBO(33, 33, 33, 1.0),
-          padding: new EdgeInsets.all(20.0),
-          child: Center(
-            child: ListView(
-            scrollDirection: Axis.vertical,
-            children: <Widget>[
-              Container(
-                child: Text(
-                  "Rechercher une personne",
-                  style: TextStyle(
-                    fontSize: 20.0
-                  ),
-                ), 
-              ),
-              Container(
-                child: Stack(
-                    alignment: const Alignment(1.0, 1.0),
-                    children: <Widget>[
-                      new TextField(
-                        autofocus: true,
-                        controller: _controller,
-                        decoration: InputDecoration(
-                          // helperText: "Saisissez un nom",
-                          hintText: "Saisissez un nom",
-                          prefixIcon: Icon(
-                            Icons.account_box,
-                            size: 28.0,
-                          ),
-                          suffixIcon: IconButton(
-                            icon: Icon(Icons.clear),
-                            onPressed: () {
-                             _controller.clear();
-                          }),
+        return new GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {},
+          child: new Container(
+            color: Color.fromRGBO(33, 33, 33, 1.0),
+            padding: new EdgeInsets.all(20.0),
+            child: Center(
+              child: ListView(
+              scrollDirection: Axis.vertical,
+              children: <Widget>[
+                Container(
+                  child: Text(
+                    "Rechercher une personne",
+                    style: TextStyle(
+                      fontSize: 20.0
+                    ),
+                  ), 
+                ),
+                Container(
+                  child: Stack(
+                      alignment: const Alignment(1.0, 1.0),
+                      children: <Widget>[
+                        new TextField(
+                          // autofocus: true,
+                          controller: _controller,
+                          decoration: InputDecoration(
+                            // helperText: "Saisissez un nom",
+                            hintText: "Saisissez un nom",
+                            prefixIcon: Icon(
+                              Icons.account_box,
+                              size: 28.0,
+                            ),
+                            suffixIcon: IconButton(
+                              icon: Icon(Icons.clear),
+                              onPressed: () {
+                              _controller.clear();
+                            }),
+                          )
                         )
-                      )
-                    ]
-                )
+                      ]
+                  )
+                ),
+                Container(
+                  margin:  EdgeInsets.only(top: 10.0),
+                  height: 250.0,
+                  child: ListView(children: _getUsersList()),
+                ),
+              ]
               ),
-              Container(
-                margin:  EdgeInsets.only(top: 10.0),
-                height: 160.0,
-                child: ListView(children: <Widget>[
-                  Container(
-                    height: 50.0,
-                    color: Colors.red,
-                  ),
-                  Container(
-                    height: 50.0,
-                    color: Colors.green,
-                  ),
-                  Container(
-                    height: 50.0,
-                    color: Colors.yellow,
-                  ),
-                ]),
-              ),
-            ]
             ),
-          ),
+          )
         );
       }
     );
