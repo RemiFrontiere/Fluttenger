@@ -8,6 +8,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import './widgets/google_sign_in_btn.dart';
 import './class/userDetail.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 void main() => runApp(new MyApp());
 
@@ -120,8 +122,20 @@ class UserOptionsState extends State<UserOptions> {
         user.email,
         user.isAnonymous,
         user.isEmailVerified,
-        providerData);
+        providerData
+        );
 
+    if (user != null && details != null) {
+      // Check is already sign up
+      final QuerySnapshot result =
+          await Firestore.instance.collection('users').where('id', isEqualTo: user.uid).getDocuments();
+      final List<DocumentSnapshot> documents = result.documents;
+      if (documents.length == 0) {
+        // Update data to server if new user
+        Firestore.instance.collection('users').document(user.uid).setData(
+            {'nickname': user.displayName, 'photoUrl': user.photoUrl, 'id': user.uid});
+      } 
+    }
     print("User Name : ${user.displayName}");
     
     Navigator.push(

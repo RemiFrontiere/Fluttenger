@@ -3,12 +3,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import '../class/chatBarItem.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+// import 'package:cached_network_image/cached_network_image.dart';
+// import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class ChatWidget extends StatefulWidget {
  Color _color;
  ChatBarItem _item;
 
- List<String> list = ['Rémi', 'Olivier', 'Aubry', 'Wandy','Kevin', 'Maxence', 'Florian', 'Hugo'];
+//  List<String> list = ['Rémi', 'Olivier', 'Aubry', 'Wandy','Kevin', 'Maxence', 'Florian', 'Hugo'];
 
 
  ChatBarItem get item => _item;
@@ -22,55 +26,50 @@ class ChatWidget extends StatefulWidget {
   }
 }
 
+    // for(var i = 0; i < widget.list.length; i++){
+    //   containers.add(
+    //     new Container(
+    //       height: 50.0,
+    //       // color: Colors.red,
+    //       child: new Row(
+    //         crossAxisAlignment: CrossAxisAlignment.center,
+    //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //         children: <Widget>[
+    //           Text(widget.list[i]),
+    //           Container(
+    //             height: 30.0,
+    //             child: 
+    //               FloatingActionButton(
+    //               onPressed: () {
+    //                 showDialog(context: context, child:
+    //                   new AlertDialog(
+    //                     title: new Text("MortMesC"),
+    //                     content: new Text(widget.list[i]),
+    //                   )
+    //                 );
+    //                 print(widget.list[i]);
+    //               },
+    //               tooltip: 'B',
+    //               child: new Icon(
+    //                 Icons.add
+    //               ),
+    //             ),
+    //           )
+    //         ],
+    //       )
+    //     )
+    //   );
+    // }
+
+    // return containers;       
+  // }
+
 class _ChatWidgetState extends State<ChatWidget> {
-  final TextEditingController _controller = new TextEditingController();  
+  final TextEditingController _controller = new TextEditingController();
   
   @override
   void initState() {
     super.initState();
-  }
-
-  
-  List<Container> _getUsersList(){
-
-    List<Container> containers = new List<Container>();
-
-    for(var i = 0; i < widget.list.length; i++){
-      containers.add(
-        new Container(
-          height: 50.0,
-          // color: Colors.red,
-          child: new Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(widget.list[i]),
-              Container(
-                height: 30.0,
-                child: 
-                  FloatingActionButton(
-                  onPressed: () {
-                    showDialog(context: context, child:
-                      new AlertDialog(
-                        title: new Text("MortMesC"),
-                        content: new Text(widget.list[i]),
-                      )
-                    );
-                    print(widget.list[i]);
-                  },
-                  tooltip: 'B',
-                  child: new Icon(
-                    Icons.add
-                  ),
-                ),
-              )
-            ],
-          )
-        )
-      );
-    }
-
-    return containers;       
   }
 
   _openAddFriendSnackbar() {
@@ -122,7 +121,24 @@ class _ChatWidgetState extends State<ChatWidget> {
                 Container(
                   margin:  EdgeInsets.only(top: 10.0),
                   height: 250.0,
-                  child: ListView(children: _getUsersList()),
+                  child: StreamBuilder(
+                    stream: Firestore.instance.collection('users').snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return Center(
+                          child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
+                          ),
+                        );
+                      } else {
+                        return ListView.builder(
+                          padding: EdgeInsets.all(10.0),
+                          itemBuilder: (context, index) => buildItem(context, snapshot.data.documents[index]),
+                          itemCount: snapshot.data.documents.length,
+                        );
+                      }
+                    },
+                  ),
                 ),
               ]
               ),
@@ -131,6 +147,94 @@ class _ChatWidgetState extends State<ChatWidget> {
         );
       }
     );
+  }
+
+  // Widget buildItem(BuildContext context, DocumentSnapshot document) {
+
+  // }
+
+  Widget buildItem(BuildContext context, DocumentSnapshot document) {
+    if (document['id'] == 1) {
+      return Container();
+    } else {
+      return Container(
+        child: FlatButton(
+          child: Row(
+            children: <Widget>[
+              Material(
+                child: new CircleAvatar(
+                    backgroundImage: new NetworkImage(document['photoUrl'])
+                ),
+                // child: CachedNetworkImage(
+                //   // placeholder: Container(
+                //   //   child: CircularProgressIndicator(
+                //   //     strokeWidth: 1.0,
+                //   //     valueColor: AlwaysStoppedAnimation<Color>(Colors.cyan),
+                //   //   ),
+                //   //   width: 50.0,
+                //   //   height: 50.0,
+                //   //   padding: EdgeInsets.all(15.0),
+                //   // ),
+                //   // imageUrl: document['photoUrl'],
+                //   // width: 50.0,
+                //   // height: 50.0,
+                //   // fit: BoxFit.cover,
+                // ),
+                borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                clipBehavior: Clip.hardEdge,
+              ),
+              new Flexible(
+                child: Container(
+                  child: new Column(
+                    children: <Widget>[
+                      new Container(
+                        child: Text(
+                          'Nom: ${document['nickname']}',
+                          style: TextStyle(color: Colors.black87),
+                        ),
+                        alignment: Alignment.centerLeft,
+                        margin: new EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 5.0),
+                      ),
+                      new Container(
+                        child: Text(
+                          'A propos: ${document['aboutMe'] ?? 'Not available'}',
+                          style: TextStyle(color: Colors.black87),
+                        ),
+                        alignment: Alignment.centerLeft,
+                        margin: new EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                      )
+                    ],
+                  ),
+                  margin: EdgeInsets.only(left: 20.0),
+                ),
+              ),
+            ],
+          ),
+          onPressed: () {
+                    showDialog(context: context, child:
+                      new AlertDialog(
+                        title: new Text("MortMesC"),
+                        content: new Text(document['nickname']),
+                      )
+                    );
+            // Navigator.push(
+            //     context,
+            //     new MaterialPageRoute(
+            //         // builder: 
+            //         // (context) => new Chat(
+            //         //       peerId: document.documentID,
+            //         //       peerAvatar: document['photoUrl'],
+            //         //     )
+            //             ));
+          },
+          color: Colors.blueGrey,
+          padding: EdgeInsets.fromLTRB(25.0, 10.0, 25.0, 10.0),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+        ),
+        margin: EdgeInsets.only(bottom: 10.0, left: 5.0, right: 5.0),
+      );
+    }
   }
 
   @override
